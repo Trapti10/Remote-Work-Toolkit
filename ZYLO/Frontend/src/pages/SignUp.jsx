@@ -1,26 +1,91 @@
-import React from 'react'
+import React, { useState } from 'react'
 import "tailwindcss";
 import SignUpImg from "../assets/SignUp_Img.png";
+import { Link } from 'react-router-dom';
+
 
 const SignUp = () => {
-   return ( 
-   <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-purple-200 to-purple-400 p-4"> 
-   <div className="bg-white rounded-3xl shadow-xl w-full max-w-4xl flex overflow-hidden"> {/* Left Illustration */}
-       <div className="hidden md:flex w-1/2 bg-purple-100">
-        <img src={SignUpImg} alt="Signup Illustration" className="w-full h-full animate-float" /> </div> {/* Form */} 
-       <div className="w-full md:w-1/2 p-8"> 
-       <h2 className="text-3xl font-bold text-gray-800 mb-6"> Create Account ✨ </h2> 
-       <form className="space-y-4"> 
-         <input type="text" placeholder="Enter your name" className="w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" /> 
-         <input type="email" placeholder="Enter your email" className="w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" /> 
-         <input type="password" placeholder="Create a password" className="w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" /> 
-         <button className="w-full bg-purple-600 text-white py-3 rounded-xl hover:bg-purple-700 transition"> Sign Up </button> 
-         </form> 
-         <p className="text-center mt-6 text-sm"> Already have an account?{" "} <span className="text-purple-600 cursor-pointer">Log In</span>
-          </p> 
+
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [firstname, setFirstname] = useState('')
+  const [lastname, setLastname] = useState('')
+  const [userData, setUserData] = useState('')
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+    setUserData({
+      username:{
+        firstname: firstname,
+        lastname: lastname,
+      },
+      email: email,
+      password: password
+    })
+    setEmail('')
+    setPassword('')
+    setFirstname('')
+    setLastname('')
+
+  }
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-violet-200 to-violet-100 p-4">
+      <div className="bg-white rounded-3xl shadow-xl w-full max-w-4xl flex flex-col md:flex-row sm:flex-row overflow-hidden">
+        {/* Left Illustration */}
+        <div className="flex md:w-full sm:w-1/2 w-full 
+        bg-purple-100">
+          <img src={SignUpImg} alt="Signup Illustration" className="w-full animate-float" draggable='false' /> </div>
+        {/* Form */}
+        <div className="bg-violet-300 sm:w-1/2 md:w-full">
+          <div className="w-full p-6">
+            <div className="bg-white p-4 rounded-3xl max-sm:-mt-10 md:mt-0">
+              <h2 className="text-3xl font-bold text-gray-800 mb-6"> Create Account </h2>
+              <form
+              onSubmit={(e)=>{
+                submitHandler(e)
+              }}
+               className="space-y-1">
+                    <h3>Enter your name</h3>
+                <div className="flex gap-2">
+                  
+                    <input
+                      required
+                      value={firstname}
+                      onChange={(e) => {
+                        setFirstname(e.target.value)
+                      }}
+                      type="text" placeholder="Enter first name" className="w-full p-3 border rounded-xl focus:outline-none border-gray-400 focus:ring-2 focus:ring-purple-400" />
+                
+                    <input
+                      value={lastname}
+                      onChange={(e) => {
+                        setLastname(e.target.value)
+                      }}
+                      type="text" placeholder="Enter last name" className="w-full p-3 border rounded-xl focus:outline-none border-gray-400 focus:ring-2 focus:ring-purple-400" />
+                
+                </div>
+                <h3>Email</h3>
+                <input
+                  required
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value)
+                  }}
+                  type="email" placeholder="Enter your email" className="w-full p-3 border border-gray-400  rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" />
+                <h3>Password</h3>
+                <input type="password" placeholder="Create a password" className="w-full p-3 border border-gray-400  rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" />
+                <button className="w-full bg-purple-600 text-white py-3 rounded-xl hover:bg-purple-700 transition mt-2"> Sign Up </button>
+              </form>
+              <p className="text-center mt-6 text-sm"> Already have an account?{" "}  <Link to="/login" className="text-purple-600 cursor-pointer">
+                Log In
+              </Link>
+              </p>
+            </div>
           </div>
-           </div> 
-           </div> ); 
+        </div>
+      </div>
+    </div>);
 }
 
 
