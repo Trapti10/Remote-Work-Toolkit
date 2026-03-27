@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import "tailwindcss";
 import SignUpImg from "../assets/SignUp_Img.png";
-import { Link } from 'react-router-dom';
-
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios'
+import {userDataContext} from '../Context/userContext';
 
 const SignUp = () => {
 
@@ -12,21 +13,34 @@ const SignUp = () => {
   const [lastname, setLastname] = useState('')
   const [userData, setUserData] = useState('')
 
-  const submitHandler = (e) => {
+  const navigate = useNavigate()
+
+  const {user, setUser} = React.useContext(userDataContext)
+
+  const submitHandler = async (e) => {
     e.preventDefault();
-    setUserData({
-      username:{
+    const newUser = ({
+      fullname: {
         firstname: firstname,
         lastname: lastname,
       },
       email: email,
       password: password
     })
+
+    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/register`, newUser)
+
+    if(response.status === 201){
+      const data = response.data
+     setUser(data.user)
+     localStorage.setItem('token', data.token)
+      navigate('/dashboard')
+    }
+
     setEmail('')
     setPassword('')
     setFirstname('')
     setLastname('')
-
   }
 
   return (
@@ -42,28 +56,28 @@ const SignUp = () => {
             <div className="bg-white p-4 rounded-3xl max-sm:-mt-10 md:mt-0">
               <h2 className="text-3xl font-bold text-gray-800 mb-6"> Create Account </h2>
               <form
-              onSubmit={(e)=>{
-                submitHandler(e)
-              }}
-               className="space-y-1">
-                    <h3>Enter your name</h3>
+                onSubmit={(e) => {
+                  submitHandler(e)
+                }}
+                className="space-y-1">
+                <h3>Enter your name</h3>
                 <div className="flex gap-2">
-                  
-                    <input
-                      required
-                      value={firstname}
-                      onChange={(e) => {
-                        setFirstname(e.target.value)
-                      }}
-                      type="text" placeholder="Enter first name" className="w-full p-3 border rounded-xl focus:outline-none border-gray-400 focus:ring-2 focus:ring-purple-400" />
-                
-                    <input
-                      value={lastname}
-                      onChange={(e) => {
-                        setLastname(e.target.value)
-                      }}
-                      type="text" placeholder="Enter last name" className="w-full p-3 border rounded-xl focus:outline-none border-gray-400 focus:ring-2 focus:ring-purple-400" />
-                
+
+                  <input
+                    required
+                    value={firstname}
+                    onChange={(e) => {
+                      setFirstname(e.target.value)
+                    }}
+                    type="text" placeholder="Enter first name" className="w-full p-3 border rounded-xl focus:outline-none border-gray-400 focus:ring-2 focus:ring-purple-400" />
+
+                  <input
+                    value={lastname}
+                    onChange={(e) => {
+                      setLastname(e.target.value)
+                    }}
+                    type="text" placeholder="Enter last name" className="w-full p-3 border rounded-xl focus:outline-none border-gray-400 focus:ring-2 focus:ring-purple-400" />
+
                 </div>
                 <h3>Email</h3>
                 <input
@@ -74,7 +88,13 @@ const SignUp = () => {
                   }}
                   type="email" placeholder="Enter your email" className="w-full p-3 border border-gray-400  rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" />
                 <h3>Password</h3>
-                <input type="password" placeholder="Create a password" className="w-full p-3 border border-gray-400  rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" />
+                <input
+                  required
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value)
+                  }}
+                  type="password" placeholder="Create a password" className="w-full p-3 border border-gray-400  rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" />
                 <button className="w-full bg-purple-600 text-white py-3 rounded-xl hover:bg-purple-700 transition mt-2"> Sign Up </button>
               </form>
               <p className="text-center mt-6 text-sm"> Already have an account?{" "}  <Link to="/login" className="text-purple-600 cursor-pointer">
