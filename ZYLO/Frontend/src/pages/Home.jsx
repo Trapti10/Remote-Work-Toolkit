@@ -1,13 +1,14 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
-import SignUp from './SignUp'
+
+import Navbar from '../Component/Navbar'
+import IntroSection from '../Component/IntroSection'
 
 
 const Home = () => {
   return (
     <div>
-      <Link to="/login">Login</Link>
-      <Link to="/signup">Sign Up</Link>
+     <Navbar/>
+     <IntroSection/>
     </div>
   )
 }
