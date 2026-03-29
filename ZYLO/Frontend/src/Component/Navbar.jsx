@@ -5,7 +5,7 @@ import Btn2 from './Btn2'
 
 const Navbar = () => {
   return (
-    <div className='w-full h-20 bg-purple-100 flex justify-between items-center px-25 py-10 text-xl font-semibold'>
+    <div className='w-full h-20 bg-purple-100 flex justify-between items-center px-25 py-10 text-md font-semibold'>
       <div className=" h-30">
         <img src={LOGO} alt="Logo" srcset="" className='h-full'/>
         </div>
