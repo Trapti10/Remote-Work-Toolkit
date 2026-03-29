@@ -2,6 +2,8 @@ import React from 'react'
 
 import Navbar from '../Component/Navbar'
 import IntroSection from '../Component/IntroSection'
+import Trusted from '../Component/Trusted'
+import Features from '../Component/Features'
 
 
 const Home = () => {
@@ -9,6 +11,8 @@ const Home = () => {
     <div>
      <Navbar/>
      <IntroSection/>
+     <Trusted/>
+     <Features/>
     </div>
   )
 }
