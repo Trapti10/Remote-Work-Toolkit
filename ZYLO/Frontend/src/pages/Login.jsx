@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import "tailwindcss";
 import LoginImg from "../assets/Login_Img.png"
-import { userDataContext } from '../Context/userContext';
+import { UserDataContext } from '../Context/ContextUser';
 import { Navigate } from 'react-router-dom';
 import axios from 'axios'
 
@@ -12,7 +12,7 @@ const Login = () => {
   const [password, setPassword] = useState('')
   const [userData, setUserData] = useState('')
 
-  const {user, setUser} = React.useContext(userDataContext)
+  const {user, setUser} = React.useContext(UserDataContext)
   const navigate = useNavigate()
 
   const submitHandler = async (e)=>{

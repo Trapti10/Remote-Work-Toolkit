@@ -3,7 +3,7 @@ import "tailwindcss";
 import SignUpImg from "../assets/SignUp_Img.png";
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios'
-import {userDataContext} from '../Context/userContext';
+import { UserDataContext } from '../Context/ContextUser';
 
 const SignUp = () => {
 
@@ -15,7 +15,7 @@ const SignUp = () => {
 
   const navigate = useNavigate()
 
-  const {user, setUser} = React.useContext(userDataContext)
+  const {user, setUser} = React.useContext(UserDataContext)
 
   const submitHandler = async (e) => {
     e.preventDefault();
