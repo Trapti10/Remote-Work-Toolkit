@@ -37,7 +37,7 @@ const value = [
 const Trusted = () => {
   return (
     <div className='flex flex-col gap-7 items-center justify-center bg-purple-50 mb-20 p-8'>
-    <h1 className="text-3xl font-heading font-bold">Trusted students, startups, and remote teams</h1>
+    <h1 className="text-3xl font-heading font-bold">Trusted by students, startups, and remote teams</h1>
     <div className="flex gap-10">
         {
             value.map(item =>(

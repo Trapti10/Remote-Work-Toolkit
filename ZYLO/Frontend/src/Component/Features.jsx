@@ -39,10 +39,10 @@ const Features = () => {
    
 
     return (
-        <div className='flex flex-col justify-center items-center gap-10 mb-15 pl-15 pr-15'>
+        <div id='features' className='flex flex-col justify-center items-center gap-10 mb-15 pl-15 pr-15'>
             <div className="flex flex-col gap-4 justify-center items-center ">
-                <h1 className="text-3xl font-heading font-bold">Everything Your Team Needs to Work Smarter</h1>
-                <p className="text-xl text-gray-700">From task planning to real-time collaboration, everything is designed to help your team stay focused and productive.</p>
+                <h1 className="text-4xl font-heading font-bold">Everything Your Team Needs to Work Smarter</h1>
+                <p className="text-lg text-gray-700 max-w-150 text-center">From task planning to real-time collaboration, everything is designed to help your team stay focused and productive.</p>
             </div>
          <div className="flex md:flex-row flex-col gap-15 md:gap-5 mt-15">
                     {/* Left values */}

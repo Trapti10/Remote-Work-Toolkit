@@ -6,3 +6,7 @@
   --font-heading: "Lora", serif;
   --font-sans: "Inter", sans-serif;
 }
+
+html{
+  scroll-behavior: smooth;
+}
