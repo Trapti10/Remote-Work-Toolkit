@@ -17,8 +17,8 @@ const Navbar = () => {
   }
 
   return (
-    <div className='w-full h-20 bg-purple-100 flex justify-between items-center px-25 py-10 text-md font-semibold'>
-      <Link to='/' className=" h-30">
+    <div className='w-full h-20 bg-purple-100 flex justify-between items-center px-20 py-10 text-md font-semibold'>
+      <Link to='/' className=" h-10">
         <img src={LOGO} alt="Logo" srcset="" className='h-full'/>
         </Link>
         <div className="flex gap-10 items-center">
@@ -30,7 +30,7 @@ const Navbar = () => {
             <Link to='/about' className='hover:text-purple-800'>About</Link>
             <div className="flex gap-4 justify-center items-center">
             <Link to='/signup' className=" hover:-translate-y-1 transition duration-300 cursor-pointer">
-                <Btn1/>
+                <Btn1 text='Get Started'/>
             </Link>
             <Link to='/login' className=" hover:-translate-y-1 transition duration-300 cursor-pointer">
                 <Btn2/>

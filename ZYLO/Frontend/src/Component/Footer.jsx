@@ -19,7 +19,7 @@ const Footer = () => {
     return (
         <section className='relative '>
             <div classname='w-full object-cover'>
-                <img src={FooterImg} alt="" classname='' />
+                <img src={FooterImg} alt="" className='' />
             </div>
             <div className="flex absolute top-7 px-14  justify-evenly gap-40">
                 <div className="mt-15">
@@ -33,7 +33,7 @@ const Footer = () => {
                     </h1>
                     <div className="flex gap-4 justify-center items-center">
                         <Link to='/signup' className=' hover:-translate-y-1 transition duration-300'>
-                            <Btn1 />
+                            <Btn1 text="Get Started"/>
                         </Link>
                         <Link to='/login' className=' hover:-translate-y-1 transition duration-300'>
                             <Btn2 />

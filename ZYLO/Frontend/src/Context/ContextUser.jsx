@@ -1,16 +1,19 @@
-import React, { createContext, useState } from 'react'
+import React, { createContext, useEffect, useState } from 'react'
 
 export const UserDataContext = createContext()
 
 const ContextUser = ({children}) => {
 
-    const [user, setUser] = useState({
-        email: '',
-        fullname:{
-            firstname: '',
-            lastname: ''
-        }
-    })
+    const [user, setUser] = useState(null)
+
+    useEffect(() => {
+      const storedUser =  JSON.parse(localStorage.getItem('user'));
+
+      if(storedUser) {
+        setUser(storedUser);
+      }
+    }, [])
+    
 
   return (
     <div>

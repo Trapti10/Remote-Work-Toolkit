@@ -12,23 +12,29 @@ const Login = () => {
   const [password, setPassword] = useState('')
   const [userData, setUserData] = useState('')
 
-  const {user, setUser} = React.useContext(UserDataContext)
+  const { user, setUser } = React.useContext(UserDataContext)
   const navigate = useNavigate()
+  const submitHandler = async (e) => {
 
-  const submitHandler = async (e)=>{
-    e.preventDefault();
-    const userData = {
-      email: email,
-      password: password
-    }
+    try {
+      e.preventDefault();
+      const userData = {
+        email: email,
+        password: password
+      }
 
-    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/login`, userData)
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/login`, { email, password })
 
-    if(response.status === 200){
-      const data = response.data
-      setUser(data.user)
-      localStorage.setItem('token', data.token)
-      navigate('/dashboard')
+      if (response.status === 200) {
+        const data = response.data
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        setUser(data.user)
+        navigate('/dashboard')
+      }
+    } catch (err) {
+      alert('User not found')
+      console.log(err.response?.data);
     }
 
     setEmail('')
@@ -39,33 +45,33 @@ const Login = () => {
     <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-violet-200 to-violet-100 p-4">
       <div className="bg-white rounded-3xl shadow-xl w-full max-w-4xl overflow-hidden flex flex-col md:flex-row sm:flex-row"> {/* Left Illustration Section */}
         <div className="flex md:w-full sm:w-1/2 w-full  bg-purple-100">
-          <img src={LoginImg} alt="Login Illustration" className="w-full animate-float" draggable='false'/>
+          <img src={LoginImg} alt="Login Illustration" className="w-full animate-float" draggable='false' />
         </div> {/* Form Section */}
         <div className="bg-violet-300 sm:w-1/2 md:w-full">
           <div className="w-full p-6">
             <div className="bg-white p-4 rounded-3xl max-sm:-mt-10 md:mt-0">
               <h2 className="text-3xl font-bold text-gray-800 mb-6"> Welcome Back </h2>
 
-              <form onSubmit={(e)=>{
+              <form onSubmit={(e) => {
                 submitHandler(e)
               }}
-              className="space-y-4">
+                className="space-y-4">
                 <h1>Email</h1>
                 <input
-                 required
-                 value={email}
-                 onChange={(e)=>{
-                  setEmail(e.target.value)
-                 }}
+                  required
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value)
+                  }}
                   type="email" placeholder="Enter your email" className="w-full p-3 border border-gray-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" />
                 <h1>Password</h1>
                 <input
-                required 
-                value={password}
-                onChange={(e)=>{
-                  setPassword(e.target.value)
-                }}
-                type="password" placeholder="Enter your password" className="w-full p-3 border border-gray-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" />
+                  required
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value)
+                  }}
+                  type="password" placeholder="Enter your password" className="w-full p-3 border border-gray-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" />
                 <div className="text-right text-sm text-purple-600 cursor-pointer">
                   Forgot password?
                 </div>
