@@ -21,8 +21,8 @@ const SignUp = () => {
     e.preventDefault();
     const newUser = ({
       fullname: {
-        firstname: firstname,
-        lastname: lastname,
+        firstname,
+        lastname
       },
       email: email,
       password: password
@@ -39,7 +39,7 @@ if (response.status === 201) {
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
 
-      navigate("dashboard");
+      navigate("/dashboard");
     }
 
 
