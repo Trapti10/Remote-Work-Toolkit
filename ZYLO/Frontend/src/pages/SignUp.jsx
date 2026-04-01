@@ -19,7 +19,7 @@ const SignUp = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    
+
      const fullname = { firstname };
   if (lastname && lastname.trim() !== "") {
     fullname.lastname = lastname;
@@ -31,7 +31,16 @@ const SignUp = () => {
     password
   };
 
-    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/register`, newUser)
+  try {
+  const response = await axios.post(
+    `${import.meta.env.VITE_BASE_URL}/users/register`,
+    newUser,
+    { headers: { "Content-Type": "application/json" } }
+  );
+  console.log("Signup success:", response.data);
+} catch (err) {
+  console.log("Signup failed:", err.response?.data || err.message);
+}
   
     
 if (response.status === 201) {
