@@ -22,9 +22,9 @@ const Footer = () => {
                 <img src={FooterImg} alt="" className='' />
             </div>
             <div className="flex absolute top-7 px-14  justify-evenly gap-40">
-                <div className="mt-15">
+                <div className="mt-25">
                     
-                    <img src={logo} alt="" className='size-34 w-fit' />
+                    <img src={logo} alt="" className='h-10 mb-8 w-fit' />
                     <h3 className="-mt-4 ml-5 text-gray-300 font-sans text-md max-w-60">Empowering Remote teams with seamless collaboration</h3>
                 </div>
                 <div className="">

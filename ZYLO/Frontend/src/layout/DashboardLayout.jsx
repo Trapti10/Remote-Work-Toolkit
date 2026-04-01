@@ -11,7 +11,7 @@ const DashboardLayout = () => {
     
 
   return (
-    <div className='h-screen flex flex-col'>
+    <div className='h-screen flex flex-col '>
         <Topbar open={open} setOpen={setOpen}/>
        
         <div className=" flex flex-1 overflow-hidden">
@@ -22,7 +22,7 @@ const DashboardLayout = () => {
           onClick={() => setOpen(false)}
         ></div>
       )}
-        <div className=" flex-1 overflow-y-auto ">
+        <div className=" flex-1 overflow-y-auto p-6 bg-[#cfcfcf55]">
            <div className="flex justify-between flex-1 mb-5 mt-5 md:hidden items-center border border-purple-400 p-3 rounded-full">
                     <input
                       type="text"

@@ -9,8 +9,11 @@ import UserProtectedWrapper from './pages/UserProtectedWrapper'
 import UserLogout from './pages/UserLogout'
 import UserProfile from './pages/UserProfile'
 import DashboardLayout from './layout/DashboardLayout'
+import Tasks from './pages/Tasks'
 
 const App = () => {
+
+  
   return (
     <div>
       <Routes>
@@ -29,9 +32,10 @@ const App = () => {
       >
         <Route index element={<Dashboard />} />
         <Route path="profile" element={<UserProfile />} />
+        <Route path="tasks" element={<Tasks />} />
 
       </Route>
-        <Route path='/user/logout' element={
+        <Route path='/users/logout' element={
           <UserProtectedWrapper>
             <UserLogout />
           </UserProtectedWrapper>
