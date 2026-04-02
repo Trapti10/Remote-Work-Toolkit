@@ -20,7 +20,7 @@ const Topbar = ({open, setOpen}) => {
     const navigate = useNavigate();
 
   return (
-       <div className="flex justify-between items-center p-4 relative  bg-purple-100">
+       <div className="flex justify-between items-center p-4 relative shadow-md bg-purple-200">
         <div className="flex gap-4 ">
         <button className='block md:hidden' onClick ={toggleMenu}>
                 {open ?<TbMenu3/>: <GiHamburgerMenu/>}

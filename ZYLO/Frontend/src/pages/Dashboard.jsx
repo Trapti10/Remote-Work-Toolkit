@@ -1,6 +1,8 @@
 import { FaTasks, FaCheckCircle, FaClock, FaExclamationCircle } from "react-icons/fa";
 import UserProfile from "./UserProfile";
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { UserDataContext } from "../Context/ContextUser";
 
 const stats = [
   { title: "Total Tasks", value: 20, icon: <FaTasks /> },
@@ -28,8 +30,9 @@ const tasks = [
 
 const Dashboard = () => {
 
-
   const navigate = useNavigate();
+
+  const {user}  =useContext(UserDataContext);
 
   return (
     <div className=" min-h-screen mt-10 text-black">
