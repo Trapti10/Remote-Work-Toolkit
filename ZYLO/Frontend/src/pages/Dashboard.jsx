@@ -1,7 +1,14 @@
 import { FaTasks, FaCheckCircle, FaClock, FaExclamationCircle } from "react-icons/fa";
+
 import { useState } from "react";
 import PieChartbox from "../Component/PieChartbox";
 import BarChartbox from "../Component/BarChartbox";
+
+import UserProfile from "./UserProfile";
+import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { UserDataContext } from "../Context/ContextUser";
+
 
 const initialTasks = [
   {
@@ -50,7 +57,6 @@ const Dashboard = () => {
   const overdue = tasks.filter(t => t.status === "Overdue").length
 
 
-
   const stats = [
     { title: "Total Tasks", value: total, icon: <FaTasks /> },
     { title: "Completed", value: completed, icon: <FaCheckCircle /> },
@@ -64,6 +70,10 @@ const Dashboard = () => {
     filter === "All"
       ? tasks
       : tasks.filter((task) => task.status === filter)
+
+  const navigate = useNavigate();
+
+  const {user}  =useContext(UserDataContext);
 
   return (
     <div className="min-h-screen mt-6 text-black space-y-6">
