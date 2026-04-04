@@ -5,12 +5,14 @@ import LoginImg from "../assets/Login_Img.png"
 import { UserDataContext } from '../Context/ContextUser';
 import { Navigate } from 'react-router-dom';
 import axios from 'axios'
+import api from '../api';
 
 const Login = () => {
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [userData, setUserData] = useState('')
+  const [error, setError] = useState('')
 
   const { user, setUser } = React.useContext(UserDataContext)
   const navigate = useNavigate()
@@ -23,19 +25,20 @@ const Login = () => {
         password: password
       }
 
-      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/login`, { email, password })
+      const response = await api.post("/users/login", { email, password })
 
       if (response.status === 200) {
         const data = response.data
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
         setUser(data.user)
-        console.log(data.user);
         navigate('/dashboard')
       }
     } catch (err) {
-      alert('User not found')
-      console.log(err.response?.data);
+       const message =
+    err.response?.data?.message || "Something went wrong";
+
+  setError(message);
     }
 
     setEmail('')
@@ -63,6 +66,7 @@ const Login = () => {
                   value={email}
                   onChange={(e) => {
                     setEmail(e.target.value)
+                    setError("");
                   }}
                   type="email" placeholder="Enter your email" className="w-full p-3 border border-gray-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" />
                 <h1>Password</h1>
@@ -71,6 +75,7 @@ const Login = () => {
                   value={password}
                   onChange={(e) => {
                     setPassword(e.target.value)
+                    setError("");
                   }}
                   type="password" placeholder="Enter your password" className="w-full p-3 border border-gray-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" />
                 <div className="text-right text-sm text-purple-600 cursor-pointer">
@@ -78,6 +83,11 @@ const Login = () => {
                 </div>
                 <button className="w-full bg-purple-600 text-white py-3 rounded-xl hover:bg-purple-700 transition"> Log In </button>
               </form>
+              {error && 
+                <div className="bg-red-100 text-red-500 p-2 rounded m-3">
+    {error}
+  </div>
+              }
               <p className="text-center mt-6 text-sm"> Don’t have an account?{" "}
                 <Link to="/signup" className="text-purple-600 cursor-pointer">Sign Up</Link>
               </p>

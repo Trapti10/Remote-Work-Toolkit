@@ -10,6 +10,8 @@ import UserLogout from './pages/UserLogout'
 import UserProfile from './pages/UserProfile'
 import DashboardLayout from './layout/DashboardLayout'
 import Tasks from './pages/Tasks'
+import { ToastContainer } from 'react-toastify'
+import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
 
@@ -41,6 +43,7 @@ const App = () => {
           </UserProtectedWrapper>
         } />
       </Routes>
+      <ToastContainer/>
     </div>
   )
 }

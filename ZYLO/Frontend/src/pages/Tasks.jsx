@@ -2,39 +2,36 @@ import React, { useContext } from 'react'
 import { UserDataContext } from '../Context/ContextUser'
 import { MdDashboardCustomize, MdOutlineDashboard } from 'react-icons/md';
 import { FaAlignLeft, FaCalendarAlt, FaChartLine, FaFlag, FaPlus, FaTasks, FaUsers } from 'react-icons/fa';
-import { FaBarsProgress } from 'react-icons/fa6';
 import { RiProgress2Fill } from 'react-icons/ri';
 
-import axios from "axios"
 import { useState } from 'react';
 import { useEffect } from 'react';
 import AddTask from '../Component/AddTask';
+import api from '../api';
 
 const Tasks = () => {
 
-    const { user } = useContext(UserDataContext);
     const [tasks, setTasks] = useState([]);
     const token = localStorage.getItem("token");
     const [showModel, setShowModel] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState("")
 
     const fetchTasks = async () => {
         try {
-            const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/tasks`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            )
+
+            setLoading(true)
+
+            const res = await api.get("/tasks");
             setTasks(res.data);
 
         } catch (error) {
-            console.log(error);
-
+            setError("Failed to load tasks")
+        }
+        finally {
+            setLoading(false);
         }
     }
-
-
     useEffect(() => {
         fetchTasks();
     }, []);
@@ -60,114 +57,134 @@ const Tasks = () => {
                         <i className="text-xl text-gray-400"><MdDashboardCustomize /></i>
                         <h1 className="text-lg font-heading text-purple-700">To Do</h1>
                     </div>
-                    <i className="text-zinc-700"><FaPlus onClick={() => setShowModel(true)} className='cursor-pointer'/></i>
-                    {showModel && <AddTask 
-                    close={() => setShowModel(false)}
-                    refreshTasks={fetchTasks}
+                    <i className="text-zinc-700"><FaPlus onClick={() => setShowModel(true)} className='cursor-pointer' /></i>
+                    {showModel && <AddTask
+                        close={() => setShowModel(false)}
+                        refreshTasks={fetchTasks}
                     />}
                 </div>
 
             </div>
             <div className="mt-6 bg-gray-100">
                 <div className="bg-white rounded-xl shadow-md p-6 overflow-x-auto">
-                    <table className="w-full text-left min-w-200">
-                        <thead>
-                            <tr className="text-gray-600 text-sm border-b">
-                                <th className="py-2">
-                                    <div className="flex items-center gap-2">
-                                        <FaTasks className="text-purple-500" />
-                                        Task
-                                    </div>
-                                </th>
+                    {loading && (
+                        <div className="flex justify-center items-center py-10">
+                            <div className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
+                        </div>
+                    )}
+                    {!loading && error && (
+                        <div className="text-center py-10 text-red-500">
+                            <p className="text-lg font-semibold">Something went wrong ❌</p>
+                            <p className="text-sm">{error}</p>
+                        </div>
+                    )}
+                    {!loading && !error && tasks.length === 0 && (
+                        <div className="text-center py-10 text-gray-500">
+                            <p className="text-lg font-semibold">No Tasks Found</p>
+                            <p className="text-sm">Start by creating your first task 🚀</p>
+                        </div>
+                    )}
+                    {!loading && tasks.length > 0 && (
+                        <table className="w-full text-left min-w-200">
+                            <thead>
+                                <tr className="text-gray-600 text-sm border-b">
+                                    <th className="py-2">
+                                        <div className="flex items-center gap-2">
+                                            <FaTasks className="text-purple-500" />
+                                            Task
+                                        </div>
+                                    </th>
 
-                                <th>
-                                    <div className="flex items-center gap-2">
-                                        <FaAlignLeft className="text-purple-500" />
-                                        Description
-                                    </div>
-                                </th>
+                                    <th>
+                                        <div className="flex items-center gap-2">
+                                            <FaAlignLeft className="text-purple-500" />
+                                            Description
+                                        </div>
+                                    </th>
 
-                                <th>
-                                    <div className="flex items-center gap-2">
-                                        <FaUsers className="text-purple-500" />
-                                        Assignee
-                                    </div>
-                                </th>
+                                    <th>
+                                        <div className="flex items-center gap-2">
+                                            <FaUsers className="text-purple-500" />
+                                            Assignee
+                                        </div>
+                                    </th>
 
-                                <th>
-                                    <div className="flex items-center gap-2">
-                                        <FaCalendarAlt className="text-purple-500" />
-                                        Due Date
-                                    </div>
-                                </th>
+                                    <th>
+                                        <div className="flex items-center gap-2">
+                                            <FaCalendarAlt className="text-purple-500" />
+                                            Due Date
+                                        </div>
+                                    </th>
 
-                                <th>
-                                    <div className="flex items-center gap-2">
-                                        <FaFlag className="text-purple-500" />
-                                        Priority
-                                    </div>
-                                </th>
+                                    <th>
+                                        <div className="flex items-center gap-2">
+                                            <FaFlag className="text-purple-500" />
+                                            Priority
+                                        </div>
+                                    </th>
 
-                                <th>
-                                    <div className="flex items-center gap-2">
-                                        <FaChartLine className="text-purple-500" />
-                                        Progress
-                                    </div>
-                                </th>
-                            </tr>
-                        </thead>
+                                    <th>
+                                        <div className="flex items-center gap-2">
+                                            <FaChartLine className="text-purple-500" />
+                                            Progress
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
 
-                        <tbody>
-                            {tasks.map((task) => (
-                                <tr key={task._id} className="border-b hover:bg-gray-50">
-                                    {/* Task */}
-                                    <td className="py-3 font-medium">{task.title}</td>
 
-                                    {/* Description */}
-                                    <td className="text-gray-500 text-sm">
-                                        {task.description}
-                                    </td>
+                            <tbody>
+                                {tasks.map((task) => (
+                                    <tr key={task._id} className="border-b hover:bg-gray-50">
+                                        {/* Task */}
+                                        <td className="py-3 font-medium">{task.title}</td>
 
-                                    {/* Assignees */}
+                                        {/* Description */}
+                                        <td className="text-gray-500 text-sm">
+                                            {task.description}
+                                        </td>
+
+                                        {/* Assignees */}
                                         <td>{task.assignedTo}
-                                        {/* <div className="flex -space-x-2">
+                                            {/* <div className="flex -space-x-2">
                                             {[...Array(task.assignedTo)].map((_, i) => (
                                                 <div
-                                                    key={i}
-                                                    className="w-7 h-7 rounded-full bg-purple-400 border-2 border-white"
+                                                key={i}
+                                                className="w-7 h-7 rounded-full bg-purple-400 border-2 border-white"
                                                 ></div>
-                                            ))}
-                                        </div> */}
-                                    </td>
+                                                ))}
+                                                </div> */}
+                                        </td>
 
-                                    {/* Date */}
-                                    <td className="text-sm text-gray-600">
-                                        {task.dueDate}
-                                    </td>
+                                        {/* Date */}
+                                        <td className="text-sm text-gray-600">
+                                            {task.dueDate}
+                                        </td>
 
-                                    {/* Priority */}
-                                    <td className={`font-medium ${getPriorityColor(task.priority)}`}>
-                                        {task.priority}
-                                    </td>
+                                        {/* Priority */}
+                                        <td className={`font-medium ${getPriorityColor(task.priority)}`}>
+                                            {task.priority}
+                                        </td>
 
-                                    {/* Progress */}
-                                    <td>
-                                        <div className="flex items-center gap-2">
-                                            <div className="w-24 h-2 bg-gray-200 rounded-full">
-                                                <div
-                                                    className="h-2 bg-purple-500 rounded-full"
-                                                    style={{ width: task.progress }}
-                                                ></div>
+                                        {/* Progress */}
+                                        <td>
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-24 h-2 bg-gray-200 rounded-full">
+                                                    <div
+                                                        className="h-2 bg-purple-500 rounded-full"
+                                                        style={{ width: task.progress }}
+                                                    ></div>
+                                                </div>
+                                                <span className="text-sm text-gray-600">
+                                                    {task.progress}
+                                                </span>
                                             </div>
-                                            <span className="text-sm text-gray-600">
-                                                {task.progress}
-                                            </span>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    )}
                 </div>
             </div>
 

@@ -4,6 +4,7 @@ import SignUpImg from "../assets/SignUp_Img.png";
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios'
 import { UserDataContext } from '../Context/ContextUser';
+import api from '../api';
 
 const SignUp = () => {
 
@@ -12,6 +13,7 @@ const SignUp = () => {
   const [firstname, setFirstname] = useState('')
   const [lastname, setLastname] = useState('')
   const [userData, setUserData] = useState('')
+  const [error, setError] = useState("")
 
   const navigate = useNavigate()
 
@@ -19,36 +21,58 @@ const SignUp = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-
-     const fullname = { firstname };
-  if (lastname && lastname.trim() !== "") {
-    fullname.lastname = lastname;
-  }
-
-  const newUser = {
-    fullname,
-    email,
-    password
-  };
-
-  const response = await axios.post(
-    `${import.meta.env.VITE_BASE_URL}/users/register`,
-    newUser,
-  );
-  console.log("Signup success:", response.data);
-
     
-if (response.status === 201) {
-      const data = response.data;
-
-      setUser(data.user);
-
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
-
-      navigate("/dashboard");
+    const fullname = { firstname };
+    if (lastname && lastname.trim() !== "") {
+      fullname.lastname = lastname;
     }
+    
+    const newUser = {
+      fullname,
+      email,
+      password
+    };
+    
+    try{
+     
+      const response = await api.post("/users/register", newUser,{
+         headers: {
+    "Content-Type": "application/json"
+  }
+      });
+      console.log("Signup success:", response.data);
+      
+      
+      if (response.status === 201) {
+        const data = response.data;
+        
+        setUser(data.user);
+        
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        
+        navigate("/dashboard");
+      }
+    } catch(err){
+        console.log("FULL ERROR:", err);
+      console.log("STATUS:", err.response?.status);
+  console.log("DATA:", err.response?.data);
+   const status = err.response?.status;
+  const message = err.response?.data?.message;
 
+      
+  if (status === 409) {
+    setError(message || "User already registered");
+  } else if (status === 400) {
+    setError(message || "Invalid input");
+  } else if (status === 404) {
+    setError(message || "User not found");
+  } else if (status === 401) {
+    setError(message || "Invalid email or password");
+  } else {
+    setError(err.message || "Server error, try again later");
+  }
+    }
 
     setEmail('')
     setPassword('')
@@ -97,7 +121,8 @@ if (response.status === 201) {
                   required
                   value={email}
                   onChange={(e) => {
-                    setEmail(e.target.value)
+                    setEmail(e.target.value);
+                    setError("");
                   }}
                   type="email" placeholder="Enter your email" className="w-full p-3 border border-gray-400  rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" />
                 <h3>Password</h3>
@@ -106,10 +131,16 @@ if (response.status === 201) {
                   value={password}
                   onChange={(e) => {
                     setPassword(e.target.value)
+                    setError("")
                   }}
                   type="password" placeholder="Create a password" className="w-full p-3 border border-gray-400  rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" />
                 <button className="w-full bg-purple-600 text-white py-3 rounded-xl hover:bg-purple-700 transition mt-2"> Sign Up </button>
               </form>
+{error && (
+  <div className="bg-red-100 text-red-500 p-2 rounded m-3">
+    {error}
+  </div>
+)}
               <p className="text-center mt-6 text-sm"> Already have an account?{" "}  <Link to="/login" className="text-purple-600 cursor-pointer">
                 Log In
               </Link>
