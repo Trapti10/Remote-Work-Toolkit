@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import api from "../api";
 
 const AddTask = ({ close, refreshTasks }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [priority, setPriority] = useState("Medium");
-  const [assignedTo, setAssignedTo] = useState("");
+  const [assignedTo, setAssignedTo] = useState([]);
   const [status, setStatus] = useState("Todo");
 
   const [users, setUsers] = useState([]);
@@ -14,8 +15,8 @@ const AddTask = ({ close, refreshTasks }) => {
   // ✅ Fetch users for dropdown
   useEffect(() => {
     const fetchUsers = async () => {
-      const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/users`);
-      setUsers(res.data);
+      const res = await api.get("/users");
+      setUsers(Array.isArray(res.data) ? res.data : res.data.users || []);
     };
     fetchUsers();
   }, []);
@@ -33,7 +34,7 @@ const AddTask = ({ close, refreshTasks }) => {
       const user = JSON.parse(localStorage.getItem("user"));
       const token = localStorage.getItem("token");
 
-      await axios.post(`${import.meta.env.VITE_BASE_URL}/tasks`,
+      await api.post("/tasks",
         {
           title,
           description,
@@ -51,11 +52,16 @@ const AddTask = ({ close, refreshTasks }) => {
       );
 
       refreshTasks();
-      close();
 
     } catch (err) {
       console.log(err);
     }
+    setDescription("");
+    setDueDate("")
+    setPriority("Medium");
+    setStatus("Todo");
+    setTitle("")
+    close()
   };
 
   return (
@@ -65,11 +71,12 @@ const AddTask = ({ close, refreshTasks }) => {
         {/* Header */}
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">Create New Task</h2>
-          <button onClick={close}>✖</button>
+          <button onClick={close} >✖</button>
         </div>
 
         {/* Task Name */}
         <input
+        required
           className="w-full border p-3 rounded-lg mb-3"
           placeholder="Task Name"
           value={title}
@@ -109,15 +116,24 @@ const AddTask = ({ close, refreshTasks }) => {
         {/* Row 2 */}
         <div className="flex gap-3 mb-3">
           {/* Assignee */}
+          
           <select
+          required
             className="w-1/2 border p-3 rounded-lg"
+            multiple
             value={assignedTo}
-            onChange={(e) => setAssignedTo(e.target.value)}
+            onChange={(e) => {
+              const selected = Array.from(
+                e.target.selectedOptions,
+                (option) => option.value
+              );
+              setAssignedTo(selected);
+            }}
           >
             <option value="">Select User</option>
-            {users.map((u) => (
+            {Array.isArray(users) && users.map((u) => (
               <option key={u._id} value={u._id}>
-                {u.email}
+                {u.fullname?.firstname}  {u.fullname?.lastname}
               </option>
             ))}
           </select>
@@ -149,6 +165,7 @@ const AddTask = ({ close, refreshTasks }) => {
           >
             Create Task
           </button>
+
         </div>
 
       </div>

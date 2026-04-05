@@ -14,10 +14,10 @@ const taskSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
-  assignedTo: { // assignee
+  assignedTo: [{ // assignee
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
-  },
+  }],
   status: {
     type: String,
     enum: ["Todo", "In Progress", "Completed"],
