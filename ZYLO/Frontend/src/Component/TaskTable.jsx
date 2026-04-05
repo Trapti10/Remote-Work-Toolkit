@@ -91,7 +91,7 @@ const TaskTable = ({ tasks, getPriorityColor, loading, error }) => {
                                     ).map((user, index) => (
                                                 <div
                                                 key={user?._id || index}
-                                                className="w-7 h-7 rounded-full bg-purple-400 border-2 text-black border-white"
+                                                className="w-7 h-7 rounded-full flex items-center justify-center text-center bg-purple-400 border-2 text-black border-white"
                                                 >
                                                     {user.fullname?.firstname?.[0]}
                                                 </div>

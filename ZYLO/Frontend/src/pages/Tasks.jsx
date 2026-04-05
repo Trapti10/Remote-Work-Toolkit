@@ -30,6 +30,8 @@ const Tasks = () => {
                     }
                 }
             );
+            console.log("Taks🤣", res.data);
+            
             setTasks(res.data);
 
         } catch (error) {
@@ -43,14 +45,9 @@ const Tasks = () => {
         fetchTasks();
     }, []);
 
-    const todoTasks = tasks.filter(t => t.status?.toLowerCase() === "Todo");
-    const ongoingTasks = tasks.filter(t => t.status?.toLowerCase() === "In Progress");
-    const completedTasks = tasks.filter(t => t.status?.toLowerCase() === "Completed");
-
-    console.log(todoTasks);
-    console.log(ongoingTasks);
-    console.log(completedTasks);
-
+    const todoTasks = tasks.filter(t => t.status === "Todo");
+    const ongoingTasks = tasks.filter(t => t.status === "In Progress");
+    const completedTasks = tasks.filter(t => t.status === "Completed");
 
     const getPriorityColor = (priority) => {
         if (priority === "High") {
@@ -90,7 +87,7 @@ const Tasks = () => {
                         <i className="text-xl text-gray-400"><RiProgress2Fill /></i>
                         <h1 className="text-lg font-heading text-purple-700">On Going</h1>
                     </div>
-                    <i className="text-zinc-700"><FaPlus /></i>
+                    <i className="text-zinc-700"><FaPlus onClick={() => setShowModel(true)} className='cursor-pointer'/></i>
                 </div>
 
             </div>
@@ -104,7 +101,7 @@ const Tasks = () => {
                         <i className="text-xl text-gray-400"><RiProgress2Fill /></i>
                         <h1 className="text-lg font-heading text-purple-700">Completed</h1>
                     </div>
-                    <i className="text-zinc-700"><FaPlus /></i>
+                    <i className="text-zinc-700"><FaPlus onClick={() => setShowModel(true)} className='cursor-pointer'/></i>
                 </div>
 
             </div>

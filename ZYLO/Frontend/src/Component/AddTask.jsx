@@ -121,6 +121,7 @@ const AddTask = ({ close, refreshTasks }) => {
           required
             className="w-1/2 border p-3 rounded-lg"
             multiple
+            size={1}
             value={assignedTo}
             onChange={(e) => {
               const selected = Array.from(
@@ -130,7 +131,7 @@ const AddTask = ({ close, refreshTasks }) => {
               setAssignedTo(selected);
             }}
           >
-            <option value="">Select User</option>
+            <option disabled>Select User</option>
             {Array.isArray(users) && users.map((u) => (
               <option key={u._id} value={u._id}>
                 {u.fullname?.firstname}  {u.fullname?.lastname}
