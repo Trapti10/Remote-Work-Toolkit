@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
+import { UserDataContext } from '../Context/ContextUser'
 import { MdDashboardCustomize } from 'react-icons/md';
-import { FaPlus } from 'react-icons/fa';
 import { RiProgress2Fill } from 'react-icons/ri';
 
 import { useState } from 'react';
@@ -8,10 +8,12 @@ import { useEffect } from 'react';
 import AddTask from '../Component/AddTask';
 import api from '../api';
 import TaskTable from '../Component/TaskTable';
+import { FaPlus } from 'react-icons/fa';
 
 const Tasks = () => {
 
     const [tasks, setTasks] = useState([]);
+    const token = localStorage.getItem("token");
     const [showModel, setShowModel] = useState(false)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
@@ -21,8 +23,13 @@ const Tasks = () => {
 
             setLoading(true)
 
-            const res = await api.get("/tasks");
-
+            const res = await api.get("/tasks",
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
             setTasks(res.data);
 
         } catch (error) {
@@ -36,17 +43,10 @@ const Tasks = () => {
         fetchTasks();
     }, []);
 
-    const todoTasks = tasks.filter(
-        t => t.status?.trim().toLowerCase() === "todo"
-    );
+    const todoTasks = tasks.filter(t => t.status?.toLowerCase() === "Todo");
+    const ongoingTasks = tasks.filter(t => t.status?.toLowerCase() === "In Progress");
+    const completedTasks = tasks.filter(t => t.status?.toLowerCase() === "Completed");
 
-    const ongoingTasks = tasks.filter(
-        t => t.status?.trim().toLowerCase() === "in progress"
-    );
-
-    const completedTasks = tasks.filter(
-        t => t.status?.trim().toLowerCase() === "completed"
-    );
     console.log(todoTasks);
     console.log(ongoingTasks);
     console.log(completedTasks);

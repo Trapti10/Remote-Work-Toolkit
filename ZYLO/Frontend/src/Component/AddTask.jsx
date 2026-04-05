@@ -116,7 +116,7 @@ const AddTask = ({ close, refreshTasks }) => {
         {/* Row 2 */}
         <div className="flex gap-3 mb-3">
           {/* Assignee */}
-          
+
           <select
           required
             className="w-1/2 border p-3 rounded-lg"
