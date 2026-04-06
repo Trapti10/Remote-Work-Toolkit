@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import Home from './pages/Home'
 import { Route, Routes } from 'react-router-dom'
@@ -12,10 +12,11 @@ import DashboardLayout from './layout/DashboardLayout'
 import Tasks from './pages/Tasks'
 import { ToastContainer } from 'react-toastify'
 import "react-toastify/dist/ReactToastify.css";
+import EditTask from './pages/EditTask'
+import api from './api'
 
 const App = () => {
 
-  
   return (
     <div>
       <Routes>
@@ -24,26 +25,27 @@ const App = () => {
         <Route path='/signup' element={<SignUp />} />
 
 
-       <Route
-        path="/dashboard"
-        element={
-          <UserProtectedWrapper>
-            <DashboardLayout />
-          </UserProtectedWrapper>
-        }
-      >
-        <Route index element={<Dashboard />} />
-        <Route path="profile" element={<UserProfile />} />
-        <Route path="tasks" element={<Tasks />} />
+        <Route
+          path="/dashboard"
+          element={
+            <UserProtectedWrapper>
+              <DashboardLayout />
+            </UserProtectedWrapper>
+          }
+        >
+          <Route index element={<Dashboard />} />
+          <Route path="profile" element={<UserProfile />} />
+          <Route path="tasks" element={<Tasks />} />
+          <Route path='tasks/editTask/:id' element={<EditTask />} />
 
-      </Route>
+        </Route>
         <Route path='/users/logout' element={
           <UserProtectedWrapper>
             <UserLogout />
           </UserProtectedWrapper>
         } />
       </Routes>
-      <ToastContainer/>
+      <ToastContainer />
     </div>
   )
 }

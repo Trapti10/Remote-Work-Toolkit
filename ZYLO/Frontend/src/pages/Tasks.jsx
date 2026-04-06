@@ -30,7 +30,6 @@ const Tasks = () => {
                     }
                 }
             );
-            console.log("Taks🤣", res.data);
             
             setTasks(res.data);
 

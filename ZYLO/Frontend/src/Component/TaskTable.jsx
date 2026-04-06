@@ -1,8 +1,11 @@
 import React from 'react'
 import { FaAlignLeft, FaCalendarAlt, FaChartLine, FaFlag, FaTasks, FaUsers } from 'react-icons/fa';
+import { MdDelete, MdOutlineEdit } from "react-icons/md";
+import { useNavigate } from 'react-router-dom';
 
 
 const TaskTable = ({ tasks, getPriorityColor, loading, error }) => {
+    const navigate = useNavigate();
     return (
         <div className="bg-white rounded-xl shadow-md p-6 overflow-x-auto">
             {loading && (
@@ -71,32 +74,32 @@ const TaskTable = ({ tasks, getPriorityColor, loading, error }) => {
                     </thead>
 
 
-                    <tbody>
+                    <tbody className="w-full table-fixed">
                         {tasks.map((task) => (
-                            <tr key={task._id} className="border-b hover:bg-gray-50">
+                            <tr key={task._id} className="border-b hover:bg-gray-100 hover:scale-101">
                                 {/* Task */}
-                                <td className="py-3 font-medium">{task.title}</td>
+                                <td className="py-3 font-medium max-w-30">{task.title}</td>
 
                                 {/* Description */}
-                                <td className="text-gray-500 text-sm">
+                                <td className="text-gray-500 text-sm p-3 max-w-50 truncate ">
                                     {task.description}
                                 </td>
 
                                 {/* Assignees */}
-                                <td>{task.assignedTo ?(
+                                <td>{task.assignedTo && task.assignedTo.length > 0 ? (
                                     <div className="flex -space-x-2">
                                         {(Array.isArray(task.assignedTo)
-                                       ? task.assignedTo
-                                       : [task.assignedTo]
-                                    ).map((user, index) => (
-                                                <div
+                                            ? task.assignedTo
+                                            : [task.assignedTo]
+                                        ).map((user, index) => (
+                                            <div
                                                 key={user?._id || index}
-                                                className="w-7 h-7 rounded-full flex items-center justify-center text-center bg-purple-400 border-2 text-black border-white"
-                                                >
-                                                    {user.fullname?.firstname?.[0]}
-                                                </div>
-                                                ))}
-                                                </div> 
+                                                className="w-7 h-7 rounded-full flex items-center justify-center text-center bg-purple-400 border-2 text-black border-white text-sm"
+                                            >
+                                                {user.fullname?.firstname?.[0]}
+                                            </div>
+                                        ))}
+                                    </div>
                                 ) : (
                                     "unassigned")}
                                 </td>
@@ -117,13 +120,16 @@ const TaskTable = ({ tasks, getPriorityColor, loading, error }) => {
                                         <div className="w-24 h-2 bg-gray-200 rounded-full">
                                             <div
                                                 className="h-2 bg-purple-500 rounded-full"
-                                                style={{ width: task.progress }}
+                                                style={{ width: `${task.progress}%` }}
                                             ></div>
                                         </div>
                                         <span className="text-sm text-gray-600">
                                             {task.progress}
                                         </span>
                                     </div>
+                                </td>
+                                <td><MdDelete className="h-6 w-6 p-1 rounded-full hover:bg-red-400 hover:text-white" /></td>
+                                <td onClick={() => navigate(`editTask/${task._id}`)}><MdOutlineEdit className="h-6 w-6 p-1 rounded-full hover:bg-yellow-300 hover:text-white" />
                                 </td>
                             </tr>
                         ))}

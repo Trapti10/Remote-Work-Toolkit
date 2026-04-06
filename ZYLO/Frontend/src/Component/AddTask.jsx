@@ -12,7 +12,6 @@ const AddTask = ({ close, refreshTasks }) => {
 
   const [users, setUsers] = useState([]);
 
-  // ✅ Fetch users for dropdown
   useEffect(() => {
     const fetchUsers = async () => {
       const res = await api.get("/users");
@@ -21,14 +20,12 @@ const AddTask = ({ close, refreshTasks }) => {
     fetchUsers();
   }, []);
 
-  // ✅ Auto progress from status
   const getProgress = () => {
-    if (status === "Todo") return "0%";
-    if (status === "In Progress") return "50%";
-    if (status === "Completed") return "100%";
+    if (status === "Todo") return 0;
+    if (status === "In Progress") return 50;
+    if (status === "Completed") return 100;
   };
 
-  // ✅ Create Task
   const createTask = async () => {
     try {
       const user = JSON.parse(localStorage.getItem("user"));
@@ -76,7 +73,7 @@ const AddTask = ({ close, refreshTasks }) => {
 
         {/* Task Name */}
         <input
-        required
+          required
           className="w-full border p-3 rounded-lg mb-3"
           placeholder="Task Name"
           value={title}
@@ -91,7 +88,6 @@ const AddTask = ({ close, refreshTasks }) => {
           onChange={(e) => setDescription(e.target.value)}
         />
 
-        {/* Row 1 */}
         <div className="flex gap-3 mb-3">
           {/* Due Date */}
           <input
@@ -113,12 +109,11 @@ const AddTask = ({ close, refreshTasks }) => {
           </select>
         </div>
 
-        {/* Row 2 */}
         <div className="flex gap-3 mb-3">
           {/* Assignee */}
 
           <select
-          required
+            required
             className="w-1/2 border p-3 rounded-lg"
             multiple
             size={1}
