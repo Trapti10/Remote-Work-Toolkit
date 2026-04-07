@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../api";
+import { toast } from "react-toastify";
 
 const EditTask = () => {
     const navigate = useNavigate();
-
     const { id } = useParams();
     const [form, setForm] = useState({
         title: "",
@@ -16,6 +16,7 @@ const EditTask = () => {
         status: "",
     });
     const [users, setUsers] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
 
@@ -35,7 +36,8 @@ const EditTask = () => {
         const fetchTask = async () => {
             try {
                 const res = await api.get(`/tasks/${id}`);
-                setForm(res.data)
+                setForm(res.data);
+                setLoading(false);
             } catch (error) {
                 console.log(error);
             }
@@ -67,12 +69,8 @@ const EditTask = () => {
             e.target.selectedOptions,
             (option) => option.value
         );
-        console.log("Sending:", form.status);
         setForm({ ...form, assignedTo: selected });
     };
-
-    console.log("Updated task", form);
-    console.log("Sending status:", form.status);
 
 
     const handleSubmit = async (e) => {
@@ -80,13 +78,12 @@ const EditTask = () => {
         try {
 
             await api.put(`/tasks/${id}`, form);
-            alert("Task Updated");
+            toast.success("Task Updated Successfully")
             navigate("/dashboard/tasks");
         } catch (error) {
             console.log(error);
         }
     };
-
     return (
         <div className="w-full max-w-3xl m-auto bg-white shadow-xl rounded-2xl p-6">
             <h2 className="text-2xl font-bold text-purple-700 mb-6">

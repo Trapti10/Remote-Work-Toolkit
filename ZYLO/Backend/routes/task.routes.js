@@ -69,7 +69,21 @@ router.put('/:id', async (req, res) => {
         res.status(500).json({ message: error.message })
     }
 })
+router.get('/:id', async (req, res) => {
+    try {
+        const task = await Task.findById(req.params.id)
+            .populate("assignedTo", "fullname email")
+            .populate("user", "fullname email");
 
+        if (!task) {
+            return res.status(404).json({ message: "Task not found" });
+        }
+
+        res.json(task);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
 router.delete("/:id", async (req, res) => {
     try {
         await Task.findByIdAndDelete(req.params.id)
