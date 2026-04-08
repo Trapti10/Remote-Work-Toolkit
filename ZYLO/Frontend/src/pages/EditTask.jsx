@@ -19,6 +19,7 @@ const EditTask = () => {
     });
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [isUpdating, setIsUpdating] = useState(false);
 
     useEffect(() => {
 
@@ -76,14 +77,17 @@ const EditTask = () => {
 
 
     const handleSubmit = async (e) => {
+        if(isUpdating) return;
         e.preventDefault();
         try {
-
+            setIsUpdating(true);
             await api.put(`/tasks/${id}`, form);
             toast.success("Task Updated Successfully")
             navigate("/dashboard/tasks");
         } catch (error) {
             console.log(error);
+        }finally{
+            setIsUpdating(false);
         }
     };
     return (
@@ -166,10 +170,11 @@ const EditTask = () => {
                 {/* Button */}
                 <button
                     type="submit"
-                    className="w-full bg-purple-600 text-white p-3 rounded-lg hover:bg-purple-700 transition"
+                    disabled={isUpdating}
+                    className={isUpdating ? "bg-gray-400 w-full text-white p-3 rounded-lg cursor-not-allowed": "w-full bg-purple-600 text-white p-3 rounded-lg hover:bg-purple-700"}
 
                 >
-                    Update Task
+                    {isUpdating ? "Updating..." : "Update Task"}
                 </button>
             </form>
         </div>

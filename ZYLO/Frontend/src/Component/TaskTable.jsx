@@ -1,9 +1,9 @@
 import React from 'react'
 import { FaAlignLeft, FaCalendarAlt, FaChartLine, FaFlag, FaTasks, FaUsers } from 'react-icons/fa';
 import { MdDelete, MdOutlineEdit } from "react-icons/md";
-import { useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-const TaskTable = ({ tasks, getPriorityColor, loading, error , handleDelete }) => {
+const TaskTable = ({ tasks, getPriorityColor, loading, error, handleDelete, deletingId }) => {
     const navigate = useNavigate();
     return (
         <div className="bg-white rounded-xl shadow-md p-6 overflow-x-auto">
@@ -127,7 +127,15 @@ const TaskTable = ({ tasks, getPriorityColor, loading, error , handleDelete }) =
                                         </span>
                                     </div>
                                 </td>
-                                <td onClick={() => handleDelete(task._id)}><MdDelete className="h-6 w-6 p-1 rounded-full hover:bg-red-400 hover:text-white" /></td>
+                                <td>
+                                    <button
+                                        onClick={() => handleDelete(task._id)}
+                                        disabled={deletingId === task._id}
+                                        className={`h-6 w-6 p-1 rounded-full ${deletingId === task._id ? " cursor-not-allowed" : " hover:bg-red-400 hover:text-white"}`}
+                                        >
+                                            {deletingId === task._id ? "..." : <MdDelete/>}
+                                    </button>
+                                </td>
                                 <td onClick={() => navigate(`editTask/${task._id}`)}><MdOutlineEdit className="h-6 w-6 p-1 rounded-full hover:bg-yellow-300 hover:text-white" />
                                 </td>
                             </tr>

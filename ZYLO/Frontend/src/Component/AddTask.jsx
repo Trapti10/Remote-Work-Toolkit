@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import api from "../api";
+import { toast } from "react-toastify";
 
 const AddTask = ({ close, refreshTasks }) => {
   const [title, setTitle] = useState("");
@@ -9,8 +10,8 @@ const AddTask = ({ close, refreshTasks }) => {
   const [priority, setPriority] = useState("Medium");
   const [assignedTo, setAssignedTo] = useState([]);
   const [status, setStatus] = useState("Todo");
-
   const [users, setUsers] = useState([]);
+  const [isCreating, setIsCreating] = useState(false)
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -27,7 +28,10 @@ const AddTask = ({ close, refreshTasks }) => {
   };
 
   const createTask = async () => {
+    if(isCreating) return;
+
     try {
+      setIsCreating(true);
       const user = JSON.parse(localStorage.getItem("user"));
       const token = localStorage.getItem("token");
 
@@ -49,15 +53,20 @@ const AddTask = ({ close, refreshTasks }) => {
       );
 
       refreshTasks();
-
+      toast.success("Task created");
+      setDescription("");
+      setDueDate("")
+      setPriority("Medium");
+      setStatus("Todo");
+      setTitle("")
     } catch (err) {
+      toast.error("Error creating task");
       console.log(err);
+      
+    }finally{
+      setIsCreating(false);
     }
-    setDescription("");
-    setDueDate("")
-    setPriority("Medium");
-    setStatus("Todo");
-    setTitle("")
+    
     close()
   };
 
@@ -150,6 +159,7 @@ const AddTask = ({ close, refreshTasks }) => {
         <div className="flex justify-end gap-3 mt-4">
           <button
             onClick={close}
+            disabled={isCreating}
             className="px-4 py-2 border rounded-lg"
           >
             Cancel
@@ -157,9 +167,10 @@ const AddTask = ({ close, refreshTasks }) => {
 
           <button
             onClick={createTask}
-            className="px-4 py-2 bg-purple-600 text-white rounded-lg"
+            disabled={isCreating}
+            className= {isCreating ?  "px-4 py-2 bg-gray-400 cursor-not-allowed text-white rounded-lg" : "px-4 py-2 bg-purple-600 text-white rounded-lg"}
           >
-            Create Task
+           {isCreating? "Creating...": "Create Task"}
           </button>
 
         </div>

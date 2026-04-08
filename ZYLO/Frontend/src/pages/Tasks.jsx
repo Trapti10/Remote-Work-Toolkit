@@ -17,7 +17,8 @@ const Tasks = () => {
     const token = localStorage.getItem("token");
     const [showModel, setShowModel] = useState(false)
     const [loading, setLoading] = useState(false)
-    const [error, setError] = useState("")
+    const [error, setError] = useState("");
+    const [deletingId, setDeletingId] = useState(null)
 
     const fetchTasks = async () => {
         try {
@@ -63,8 +64,9 @@ const Tasks = () => {
 
 
 const handleDelete = async (id) => {
+    if(deletingId) return;
     try {
-
+        setDeletingId(id);
         await api.delete(`/tasks/${id}`);
         setTasks((prev)=> prev.filter((task) => task._id !== id));
         
@@ -72,6 +74,8 @@ const handleDelete = async (id) => {
     } catch (err) {
         console.log("Error deleting task", err);
         toast.error("Failed to delete task");
+    }finally{
+        setDeletingId(null);
     }
 };
 
@@ -94,7 +98,7 @@ const handleDelete = async (id) => {
 
             </div>
             <div className="mt-6 bg-gray-100">
-                <TaskTable tasks={todoTasks} getPriorityColor={getPriorityColor} loading={loading} error={error} handleDelete={handleDelete} />
+                <TaskTable tasks={todoTasks} getPriorityColor={getPriorityColor} loading={loading} error={error} handleDelete={handleDelete} deletingId={deletingId}/>
             </div>
 
             <div className="mt-6 p-4 bg-white rounded-2xl shadow-md">
@@ -108,7 +112,7 @@ const handleDelete = async (id) => {
 
             </div>
             <div className="mt-6 bg-gray-100 ">
-                <TaskTable tasks={ongoingTasks} getPriorityColor={getPriorityColor} loading={loading} error={error} handleDelete={handleDelete}/>
+                <TaskTable tasks={ongoingTasks} getPriorityColor={getPriorityColor} loading={loading} error={error} handleDelete={handleDelete} deletingId={deletingId}/>
             </div>
 
             <div className="mt-6 p-4 bg-white rounded-2xl shadow-md">
@@ -122,7 +126,7 @@ const handleDelete = async (id) => {
 
             </div>
             <div className="mt-6 bg-gray-100 ">
-                <TaskTable tasks={completedTasks} getPriorityColor={getPriorityColor} loading={loading} error={error} handleDelete={handleDelete}/>
+                <TaskTable tasks={completedTasks} getPriorityColor={getPriorityColor} loading={loading} error={error} handleDelete={handleDelete} deletingId={deletingId}/>
             </div>
         </div>
     )
