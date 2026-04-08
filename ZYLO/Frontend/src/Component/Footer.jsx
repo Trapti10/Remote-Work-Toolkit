@@ -18,7 +18,7 @@ const Footer = () => {
      
     return (
         <section className='relative '>
-            <div classname='w-full object-cover'>
+            <div className='w-full object-cover'>
                 <img src={FooterImg} alt="" className='' />
             </div>
             <div className="flex absolute top-7 px-14  justify-evenly gap-40">

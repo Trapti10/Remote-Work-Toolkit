@@ -9,6 +9,7 @@ import AddTask from '../Component/AddTask';
 import api from '../api';
 import TaskTable from '../Component/TaskTable';
 import { FaPlus } from 'react-icons/fa';
+import { toast } from 'react-toastify';
 
 const Tasks = () => {
 
@@ -59,6 +60,22 @@ const Tasks = () => {
             return "text-gray-500";
         }
     }
+
+
+const handleDelete = async (id) => {
+    try {
+
+        await api.delete(`/tasks/${id}`);
+        setTasks((prev)=> prev.filter((task) => task._id !== id));
+        
+        toast.success("Task deleted successfully");
+    } catch (err) {
+        console.log("Error deleting task", err);
+        toast.error("Failed to delete task");
+    }
+};
+
+
     return (
         <div className=" min-h-screen ">
             <h1 className="text-lg mb-6 font-heading  text-purple-700">My Tasks</h1>
@@ -77,7 +94,7 @@ const Tasks = () => {
 
             </div>
             <div className="mt-6 bg-gray-100">
-                <TaskTable tasks={todoTasks} getPriorityColor={getPriorityColor} loading={loading} error={error} />
+                <TaskTable tasks={todoTasks} getPriorityColor={getPriorityColor} loading={loading} error={error} handleDelete={handleDelete} />
             </div>
 
             <div className="mt-6 p-4 bg-white rounded-2xl shadow-md">
@@ -91,7 +108,7 @@ const Tasks = () => {
 
             </div>
             <div className="mt-6 bg-gray-100 ">
-                <TaskTable tasks={ongoingTasks} getPriorityColor={getPriorityColor} loading={loading} error={error} />
+                <TaskTable tasks={ongoingTasks} getPriorityColor={getPriorityColor} loading={loading} error={error} handleDelete={handleDelete}/>
             </div>
 
             <div className="mt-6 p-4 bg-white rounded-2xl shadow-md">
@@ -105,7 +122,7 @@ const Tasks = () => {
 
             </div>
             <div className="mt-6 bg-gray-100 ">
-                <TaskTable tasks={completedTasks} getPriorityColor={getPriorityColor} loading={loading} error={error} />
+                <TaskTable tasks={completedTasks} getPriorityColor={getPriorityColor} loading={loading} error={error} handleDelete={handleDelete}/>
             </div>
         </div>
     )

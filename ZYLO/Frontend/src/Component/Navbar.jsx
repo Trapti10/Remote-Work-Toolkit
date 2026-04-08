@@ -19,7 +19,7 @@ const Navbar = () => {
   return (
     <div className='w-full h-20 bg-purple-200 flex justify-between items-center px-20 py-10 text-md font-semibold shadow-2xl'>
       <Link to='/' className=" h-10">
-        <img src={LOGO} alt="Logo" srcset="" className='h-full'/>
+        <img src={LOGO} alt="Logo"  className='h-full'/>
         </Link>
         <div className="flex gap-10 items-center">
             <Link to='/' className='text-purple-800'>Home</Link>
