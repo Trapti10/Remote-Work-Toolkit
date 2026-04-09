@@ -14,6 +14,7 @@ import { ToastContainer } from 'react-toastify'
 import "react-toastify/dist/ReactToastify.css";
 import EditTask from './pages/EditTask'
 import api from './api'
+import Chat from './pages/Chat'
 
 const App = () => {
 
@@ -37,6 +38,7 @@ const App = () => {
           <Route path="profile" element={<UserProfile />} />
           <Route path="tasks" element={<Tasks />} />
           <Route path='tasks/editTask/:id' element={<EditTask />} />
+          <Route path="chat" element={<Chat/>}/>
 
         </Route>
         <Route path='/users/logout' element={
