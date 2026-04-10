@@ -10,6 +10,7 @@ const connectToDb = require('./db/db');
 const cookieParser = require('cookie-parser');
 const userRoutes = require("./routes/user.routes")
 const taskRoutes = require('./routes/task.routes')
+const chatRoutes = require('./routes/chat.routes')
 
 connectToDb();
 
@@ -29,5 +30,7 @@ app.get('/', (req, res)=>{
 app.use('/users', userRoutes);
 
 app.use('/tasks', taskRoutes)
+
+app.use('/chat', chatRoutes)
 
 module.exports = app;

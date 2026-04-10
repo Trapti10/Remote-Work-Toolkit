@@ -18,7 +18,7 @@ const Chat = () => {
 
       {/* Chat List */}
       <div
-        className={`fixed md:static top-0 left-0 h-full w-72 bg-zinc-100 p-4 transform transition-transform duration-300 z-40 ${
+        className={`fixed md:static top-0 left-0 h-full w-72 border-r border-gray-200 bg-zinc-100 p-4 transform transition-transform duration-300 z-40 ${
           showChats ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         }`}
       >
@@ -44,7 +44,8 @@ const Chat = () => {
       {/* Chat Window */}
       <div className="flex-1 flex flex-col w-full">
         {/* Header */}
-        <div className="p-4 bg-white shadow flex items-center justify-between border-b border-gray-50">
+        <div className="p-4 bg-white shadow flex items-center gap-2 border-b border-gray-50">
+          <span className="h-8 w-8 rounded-full bg-purple-400 flex items-center justify-center">A</span>
           <h3 className="font-semibold">Alexis Sears</h3>
         </div>
 
