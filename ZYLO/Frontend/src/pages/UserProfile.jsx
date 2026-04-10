@@ -10,7 +10,7 @@ const UserProfile = () => {
 
 
   return (
-    <div className=" min-h-screen">
+    <div className=" min-h-screen m-6">
       <h1 className="text-lg mb-6 font-heading  text-purple-700">My Profile</h1>
 
       <div className="md:flex gap-8 items-center p-10 rounded-lg bg-white">

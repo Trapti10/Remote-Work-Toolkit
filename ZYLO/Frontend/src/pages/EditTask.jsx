@@ -91,7 +91,7 @@ const EditTask = () => {
         }
     };
     return (
-        <div className="w-full max-w-3xl m-auto bg-white shadow-xl rounded-2xl p-6">
+        <div className="w-full max-w-3xl m-auto mt-10 bg-white shadow-xl rounded-2xl p-6">
             <h2 className="text-2xl font-bold text-purple-700 mb-6">
                 Edit Task
             </h2>

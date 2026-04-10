@@ -76,7 +76,7 @@ const Dashboard = () => {
   const {user}  =useContext(UserDataContext);
 
   return (
-    <div className="min-h-screen mt-6 text-black space-y-6">
+    <div className="min-h-screen m-6 text-black space-y-6">
 
       {/*  FILTER BUTTONS.... */}
       <div className="flex gap-3">

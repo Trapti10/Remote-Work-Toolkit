@@ -81,7 +81,7 @@ const handleDelete = async (id) => {
 
 
     return (
-        <div className=" min-h-screen ">
+        <div className=" min-h-screen m-6">
             <h1 className="text-lg mb-6 font-heading  text-purple-700">My Tasks</h1>
             <div className="mt-6 p-4 bg-white rounded-2xl shadow-md">
                 <div className="flex justify-between items-center">
