@@ -1,13 +1,66 @@
 import React from 'react'
 import { useState } from "react";
 import { Smile, Paperclip, Send, Mic, Menu } from "lucide-react";
+import { useEffect } from 'react';
+import api from '../api';
+import { toast } from 'react-toastify';
+import { useContext } from 'react';
+import Btn1 from '../Component/Btn1';
+import { BiLeftArrow } from 'react-icons/bi';
+import { FaArrowLeft } from 'react-icons/fa';
 
 const Chat = () => {
-
   const [showChats, setShowChats] = useState(false);
+  const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState([]);
+  const [receiverId, setReceiverId] = useState(null);
+  const [users, setUsers] = useState([]);
+  const [showNewChat, setShowNewChat] = useState(false);
+
+  const user = JSON.parse(localStorage.getItem("user"))
+  const userId = user?._id;
+
+useEffect(() => {
+  if (!userId || !receiverId) return; // ✅ guard
+
+  const loadMessages = async () => {
+    try {
+      console.log("Fetching:", userId, receiverId); // 🔍 debug
+
+      const res = await api.get(
+        `/chat/messages/${userId}/${receiverId.trim()}`
+      );
+
+      setMessages(res.data);
+    } catch (err) {
+      toast.error("Error fetching messages");
+    }
+  };
+
+  loadMessages();
+}, [receiverId]); // ✅ only depend on receiver
+
+
+         const fetchUsers = async () => {
+             try {
+                 const res = await api.get("/users");
+                 setUsers(res.data);
+             } catch (err) {
+                 console.log(err);
+             }
+         }
+
+         const handleNewChat = ()=>{
+           fetchUsers();
+           setShowNewChat(true);
+         }
+
+
+
 
   return (
     <div className="h-full flex bg-gray-100 relative border border-none rounded-full">
+
       {/* Mobile Toggle Button */}
       <button
         className="md:hidden absolute top-4 left-4 z-50 bg-white p-2 rounded-lg shadow"
@@ -18,14 +71,42 @@ const Chat = () => {
 
       {/* Chat List */}
       <div
-        className={`fixed md:static top-0 left-0 h-full w-72 border-r border-gray-200 bg-zinc-100 p-4 transform transition-transform duration-300 z-40 ${
-          showChats ? "translate-x-0" : "-translate-x-full md:translate-x-0"
-        }`}
+        className={`fixed md:static top-0 left-0 h-full w-72 border-r border-gray-200 bg-zinc-100 p-4 transform transition-transform duration-300 z-40 ${showChats ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+          }`}
       >
+
+          <button  onClick={handleNewChat} className='text-white bg-purple-700 p-2 w-full rounded-md'>+ Add New Chat</button>
+
+        {showNewChat && (
+            <div className="absolute inset-0  flex items-center justify-center z-50 ">
+            <div className="bg-white p-4 w-80 max-h-155 overflow-y-auto">
+              <div className="flex  gap-2">
+               <i onClick={()=> setShowNewChat(false)} className='size-8 flex items-center justify-center hover:bg-gray-200'><FaArrowLeft/></i>
+              <h2 className="font-semibold mb-3">Start New Chat</h2>
+              </div>
+
+              {users.map((u) => (
+                <div
+                  key={u._id}
+                  onClick={() => {
+                    setReceiverId(u._id);
+                    setShowNewChat(false);
+                    setShowChats(false);
+                  }}
+                  className="p-2 hover:bg-gray-200 rounded cursor-pointer"
+                >
+                  {u.fullname?.firstname}{u.fullname?.lastname}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+       
         <input
           type="text"
           placeholder="Search..."
-          className="w-full p-2 mb-4 border rounded-lg"
+          className="w-full p-2 mb-4 mt-4 border rounded-lg"
         />
 
         <div className="space-y-2">
@@ -65,6 +146,7 @@ const Chat = () => {
             </div>
           </div>
 
+
           {/* Incoming */}
           <div className="flex">
             <div className="bg-gray-200 p-3 rounded-xl max-w-[75%] md:max-w-xs">
@@ -72,6 +154,8 @@ const Chat = () => {
             </div>
           </div>
         </div>
+
+
 
         {/* Input */}
         <div className="p-3 md:p-4 bg-white flex items-center gap-2 md:gap-3">
