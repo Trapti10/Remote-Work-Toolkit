@@ -1,5 +1,7 @@
 const { Server } = require("socket.io");
 const verifyUserFromToken = require('../utils/auth.helper');
+const Message = require("../models/Message.model");
+
 
 let io;
 
@@ -32,15 +34,22 @@ const initSocket = (server)=>{
     io.on("connection", (socket)=>{
         console.log("User connected: ", socket.id);
 
-        socket.on("join", (userId)=>{
-            socket.join(userId);
-        })
+        socket.join(socket.user._id.toString());
         
-        socket.on("sendMessage", ({senderId, receiverId, message})=>{
-            io.to(receiverId).emit("receiveMessage",{
-                senderId,
-                message,
-            })
+        socket.on("sendMessage", async({ receiverId, message})=>{
+            try{
+                const senderId = socket.user._id;
+                
+                const newMsg = await Message.create({
+                    senderId,
+                    receiverId,
+                    message,
+                })
+                io.to(receiverId).emit("receiveMessage",newMsg);
+                io.to(senderId.toString()).emit("receiveMessage",newMsg);
+            }catch(err){
+                console.log(err);   
+            }
         })
 
         socket.on("disconnect", () =>{

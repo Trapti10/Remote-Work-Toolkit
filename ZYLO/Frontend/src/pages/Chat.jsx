@@ -4,10 +4,11 @@ import { Smile, Paperclip, Send, Mic, Menu } from "lucide-react";
 import { useEffect } from 'react';
 import api from '../api';
 import { toast } from 'react-toastify';
-import { useContext } from 'react';
-import Btn1 from '../Component/Btn1';
+import {io} from "socket.io-client";
 import { BiLeftArrow } from 'react-icons/bi';
 import { FaArrowLeft } from 'react-icons/fa';
+import { useRef } from "react";
+
 
 const Chat = () => {
   const [showChats, setShowChats] = useState(false);
@@ -19,13 +20,34 @@ const Chat = () => {
   const [chatUsers, setChatUsers] = useState([])
   const [selectedUser, setSelectedUser] = useState(null);
   const [isTyping, setIsTyping] = useState(false)
+  const socketRef = useRef(null);
 
+  useEffect(() => {
+    if(socketRef.current) return;
+    
+    socketRef.current = io(import.meta.env.VITE_BASE_URL, {
+      auth: {
+        token: localStorage.getItem("token"),
+      },
+      transports: ["websocket"],
+      reconnection: true,
+    });
+  
+    socketRef.current.on("connect", () => {
+      console.log("✅ Connected:", socketRef.current.id);
+    });
+  
+    return () => {
+      socketRef.current?.disconnect()
+     socketRef.current = null;
+    };
+  }, []);
+  
   const user = JSON.parse(localStorage.getItem("user"))
   const userId = user?._id;
 
   useEffect(() => {
     if (!userId || !receiverId) return;
-
     const loadMessages = async () => {
       try {
 
@@ -34,6 +56,7 @@ const Chat = () => {
         );
 
         setMessages(res.data);
+        console.log("Fetched messages:", res.data);
       } catch (err) {
         toast.error("Error fetching messages");
       }
@@ -41,9 +64,9 @@ const Chat = () => {
 
     loadMessages();
   }, [userId, receiverId]); // only depend on receiver
-
+  
   useEffect(() => {
-if (!userId) return;
+    if (!userId) return;
     const chatusers = async () => {
       try {
         const res = await api.get("/chat/chatUsers");
@@ -57,25 +80,45 @@ if (!userId) return;
     }
     chatusers();
     
-
+    
   }, [userId])
+  
+  const sendMessage = async() => {
+    if (!message.trim() || !receiverId || !socketRef.current) return;
 
-  const sendMessage = async () => {
-    if (!message.trim() || !receiverId) return;
     try {
-      const res = await api.post("/chat/send", {
-        senderId: userId,
-        receiverId,
-        message,
-      });
-      setMessages((prev) => [...prev, res.data]);
-
+      if (!socketRef.current || !socketRef.current.connected) {
+    toast.error("Socket not connected");
+    return;
+  }
+      // Send real-time
+    socketRef.current.emit("sendMessage", {
+    receiverId,
+    message,
+  });
       setMessage("");
     } catch (err) {
       toast.error("Error sending message");
     }
 
   }
+  
+    useEffect(() => {
+     if (!socketRef.current) return;
+
+  const handleReceive = (msg) => {
+    setMessages((prev) => {
+      if (prev.some((m) => m._id === msg._id)) return prev;
+      return [...prev, msg];
+    });
+  };
+
+  socketRef.current.on("receiveMessage", handleReceive);
+
+  return () => {
+    socketRef.current?.off("receiveMessage", handleReceive);
+  };
+  }, []);
 
   const fetchUsers = async () => {
     try {
@@ -214,11 +257,11 @@ if (!userId) return;
 
             {/* Messages */}
             <div className="flex-1 p-4 md:p-6 space-y-4 overflow-y-auto">
-              {messages.map((msg, i) => (
+              {messages.map((msg) => (
                 <div
-                  key={i}
-                  className={`flex ${msg.senderId === userId ? "justify-end" : "justify-start"} `}>
-                  <div className={`bg-gray-200 p-3 rounded-xl max-w-[75%] md:max-w-xs ${msg.senderId === userId
+                  key={msg._id}
+                  className={`flex ${msg.senderId?.toString() === userId ? "justify-end" : "justify-start"} `}>
+                  <div className={`bg-gray-200 p-3 rounded-xl max-w-[75%] md:max-w-xs ${msg.senderId?.toString() === userId
                     ? "bg-purple-500 text-white"
                     : "bg-gray-200"
                     }`}>
