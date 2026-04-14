@@ -4,7 +4,7 @@ import { Smile, Paperclip, Send, Mic, Menu } from "lucide-react";
 import { useEffect } from 'react';
 import api from '../api';
 import { toast } from 'react-toastify';
-import {io} from "socket.io-client";
+import { io } from "socket.io-client";
 import { BiLeftArrow } from 'react-icons/bi';
 import { FaArrowLeft } from 'react-icons/fa';
 import { useRef } from "react";
@@ -21,10 +21,14 @@ const Chat = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [isTyping, setIsTyping] = useState(false)
   const socketRef = useRef(null);
+  const bottomRef = useRef(null);
+
+  const user = JSON.parse(localStorage.getItem("user"))
+  const userId = user?._id;
 
   useEffect(() => {
-    if(socketRef.current) return;
-    
+    if (socketRef.current) return;
+
     socketRef.current = io(import.meta.env.VITE_BASE_URL, {
       auth: {
         token: localStorage.getItem("token"),
@@ -32,25 +36,40 @@ const Chat = () => {
       transports: ["websocket"],
       reconnection: true,
     });
-  
+
     socketRef.current.on("connect", () => {
       console.log("✅ Connected:", socketRef.current.id);
     });
-  
+
+    socketRef.current.on("receiveMessage", (msg) => {
+  setMessages((prev) => {
+    if (prev.some((m) => m._id === msg._id)) return prev;
+    return [...prev, msg];
+  });
+});
+
     return () => {
       socketRef.current?.disconnect()
-     socketRef.current = null;
+      socketRef.current = null;
     };
   }, []);
-  
-  const user = JSON.parse(localStorage.getItem("user"))
-  const userId = user?._id;
+
+  const fetchChatUsers = async () => {
+    try {
+      const res = await api.get("/chat/chatUsers");
+      setChatUsers(res.data);
+    } catch (error) {
+      toast.error("Error fetching chat users");
+    }
+  };
+  useEffect(() => {
+    if (userId) fetchChatUsers();
+  }, [userId]);
 
   useEffect(() => {
-    if (!userId || !receiverId) return;
+    if (!receiverId) return;
     const loadMessages = async () => {
       try {
-
         const res = await api.get(
           `/chat/messages/${userId}/${receiverId}`
         );
@@ -63,62 +82,37 @@ const Chat = () => {
     };
 
     loadMessages();
-  }, [userId, receiverId]); // only depend on receiver
-  
-  useEffect(() => {
-    if (!userId) return;
-    const chatusers = async () => {
-      try {
-        const res = await api.get("/chat/chatUsers");
-        console.log("CHAT USERS RESPONSE:", res.data);
-        setChatUsers(res.data);
+  }, [receiverId]); // only depend on receiver
 
-        console.log(res.data);
-      } catch (error) {
-        toast.error("Error fetching chat users");
-      }
-    }
-    chatusers();
-    
-    
-  }, [userId])
-  
-  const sendMessage = async() => {
+
+  const sendMessage = async () => {
     if (!message.trim() || !receiverId || !socketRef.current) return;
 
     try {
-      if (!socketRef.current || !socketRef.current.connected) {
-    toast.error("Socket not connected");
-    return;
-  }
+      const newMsg = {
+        _id: Date.now(),
+        message,
+        senderId: userId,
+      };
+    if (!socketRef.current?.connected) {
+  toast.error("Socket not connected");
+  return;
+}
+
+setMessages((prev) => [...prev, newMsg]);
       // Send real-time
-    socketRef.current.emit("sendMessage", {
-    receiverId,
-    message,
-  });
+      socketRef.current.emit("sendMessage", {
+        receiverId,
+        message,
+      });
+
+      console.log(message);
       setMessage("");
     } catch (err) {
       toast.error("Error sending message");
     }
 
   }
-  
-    useEffect(() => {
-     if (!socketRef.current) return;
-
-  const handleReceive = (msg) => {
-    setMessages((prev) => {
-      if (prev.some((m) => m._id === msg._id)) return prev;
-      return [...prev, msg];
-    });
-  };
-
-  socketRef.current.on("receiveMessage", handleReceive);
-
-  return () => {
-    socketRef.current?.off("receiveMessage", handleReceive);
-  };
-  }, []);
 
   const fetchUsers = async () => {
     try {
@@ -142,6 +136,10 @@ const Chat = () => {
       setIsTyping(false);
     }, 1000);
   }
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
 
   return (
@@ -179,6 +177,7 @@ const Chat = () => {
                     setShowNewChat(false);
                     setSelectedUser(u)
                     setShowChats(false);
+                    fetchChatUsers();
                   }}
                   className="p-2 hover:bg-gray-200 rounded cursor-pointer"
                 >
@@ -210,7 +209,7 @@ const Chat = () => {
                 : "hover:bg-gray-200"
                 }`}>
               <p className="font-medium">{u.fullname?.firstname} {u.fullname?.lastname}</p>
-              {isTyping && selectedUser?._id === u._id &&(
+              {isTyping && selectedUser?._id === u._id && (
                 <p className="text-xs text-green-500 animate-pulse">
                   typing...
                 </p>
@@ -248,11 +247,11 @@ const Chat = () => {
               <h3 className="font-sans"> {selectedUser
                 ? `${selectedUser.fullname?.firstname} ${selectedUser.fullname?.lastname}`
                 : "Select a chat"}</h3>
-                   {isTyping && selectedUser &&(
+              {isTyping && selectedUser && (
                 <p className="text-xs text-green-500 animate-pulse">
                   typing...
                 </p>
-                   )}
+              )}
             </div>
 
             {/* Messages */}
@@ -260,8 +259,8 @@ const Chat = () => {
               {messages.map((msg) => (
                 <div
                   key={msg._id}
-                  className={`flex ${msg.senderId?.toString() === userId ? "justify-end" : "justify-start"} `}>
-                  <div className={`bg-gray-200 p-3 rounded-xl max-w-[75%] md:max-w-xs ${msg.senderId?.toString() === userId
+                  className={`flex ${msg.senderId === userId ? "justify-end" : "justify-start"} `}>
+                  <div className={`bg-gray-200 p-3 rounded-xl max-w-[75%] md:max-w-xs ${msg.senderId === userId
                     ? "bg-purple-500 text-white"
                     : "bg-gray-200"
                     }`}>
@@ -269,7 +268,7 @@ const Chat = () => {
                   </div>
                 </div>
               ))}
-
+              <div ref={bottomRef}></div>
 
             </div>
 
