@@ -15,42 +15,70 @@ const socials = [
 
 const Footer = () => {
 
-     
     return (
-        <section className='relative '>
-            <div className='w-full object-cover'>
-                <img src={FooterImg} alt="" className='' />
-            </div>
-            <div className="flex absolute top-7 px-14  justify-evenly gap-40">
-                <div className="mt-25">
-                    
-                    <img src={logo} alt="" className='h-10 mb-8 w-fit' />
-                    <h3 className="-mt-4 ml-5 text-gray-300 font-sans text-md max-w-60">Empowering Remote teams with seamless collaboration</h3>
-                </div>
-                <div className="">
-                    <h1 className="font-heading text-3xl font-bold text-gray-800 py-8">
-                        Ready to boost your teams productivity?
-                    </h1>
-                    <div className="flex gap-4 justify-center items-center">
-                        <Link to='/signup' className=' hover:-translate-y-1 transition duration-300'>
-                            <Btn1 text="Get Started"/>
-                        </Link>
-                        <Link to='/login' className=' hover:-translate-y-1 transition duration-300'>
-                            <Btn2 />
-                        </Link>
+        <section className='relative'>
+            
+            {/* Image */}
+            <img 
+                src={FooterImg} 
+                alt="" 
+                className='w-full h-100 md:h-auto object-cover'
+            />
+
+            <div className="absolute inset-0 px-6 md:px-14 py-6 flex flex-col justify-between">
+
+                <div className="flex flex-col items-center text-center md:items-start md:text-left md:flex-row md:justify-evenly md:gap-40">
+
+                    <div className="hidden md:block mt-25">
+                        <img src={logo} alt="" className='h-10 mb-4 w-fit' />
+                        <h3 className="text-gray-300 text-md max-w-60">
+                            Empowering Remote teams with seamless collaboration
+                        </h3>
                     </div>
 
-                </div>
-                    <div className="flex justify-evenly gap-3 items-center mt-48 text-3xl">
+                    <div>
+                        <h1 className="text-lg md:text-3xl font-bold md:text-gray-800 py-10  md:py-8">
+                            Ready to boost your teams productivity?
+                        </h1>
+
+                        <div className="flex  gap-3 md:gap-4 justify-center items-center">
+                            <Link to='/signup'>
+                                <Btn1 text="Get Started"/>
+                            </Link>
+
+                            <Link to='/login'>
+                                <Btn2 />
+                            </Link>
+                        </div>
+                    </div>
+
+                    <div className="hidden md:flex justify-evenly gap-3 items-center mt-48 text-3xl">
                         {socials.map((item) => (
                             <a key={item.id} href={item.link} target="_blank" rel="noopener noreferrer">
-                                <div className="text-white p-1 rounded-full hover:bg-white/20 hover:text-purple-900 hover:scale-110 transition duration-400 cursor-pointer">
+                                <div className="text-white p-1 rounded-full hover:bg-white/20 hover:text-purple-900 hover:scale-110 transition duration-300 cursor-pointer">
                                     {item.icon}
                                 </div>
                             </a>
                         ))}
                     </div>
-              
+                </div>
+
+                <div className="flex md:hidden justify-between items-center">
+
+                    <img src={logo} alt="" className='h-8' />
+
+                    <div className="flex gap-3 text-xl">
+                        {socials.map((item) => (
+                            <a key={item.id} href={item.link} target="_blank" rel="noopener noreferrer">
+                                <div className="text-white p-2 rounded-full hover:bg-white/20 hover:scale-110 transition duration-300 cursor-pointer">
+                                    {item.icon}
+                                </div>
+                            </a>
+                        ))}
+                    </div>
+
+                </div>
+
             </div>
         </section>
     )
