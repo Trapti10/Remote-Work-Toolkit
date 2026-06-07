@@ -290,7 +290,7 @@ const Chat = () => {
       }
     });
 
-    socket.on('onlineUsers', (userIds) => 
+    socket.on('onlineUsers', (userIds) =>
       setOnlineUsers(new Set(userIds)));
     socket.on('userOnline', ({ userId: uid }) =>
       setOnlineUsers((prev) => new Set([...prev, uid]))
@@ -341,7 +341,7 @@ const Chat = () => {
       socket.disconnect();
       socketRef.current = null;
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // ─── Fetch Chat Users ─────────────────────────────────────────────────────
@@ -504,6 +504,7 @@ const Chat = () => {
   // ─── Voice ────────────────────────────────────────────────────────────────
   const toggleVoice = () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
     if (!SpeechRecognition) {
       toast.error('Voice typing not supported in your browser');
       return;
@@ -519,8 +520,9 @@ const Chat = () => {
     recognition.maxAlternatives = 1;
     recognition.onstart = () => setIsRecording(true);
     recognition.onend = () => setIsRecording(false);
-    recognition.onerror = () => {
+    recognition.onerror = (e) => {
       setIsRecording(false);
+      if (e.error === 'no-speech') return; // ← silently stop, no toast
       toast.error('Voice recognition error');
     };
     recognition.onresult = (e) => {
@@ -587,9 +589,8 @@ const Chat = () => {
 
       {/* ── Sidebar ──────────────────────────────────────────────────────── */}
       <aside
-        className={`fixed md:static top-0 left-0 h-full w-72 bg-white border-r border-slate-200 flex flex-col z-40 transform transition-transform duration-300 ${
-          showChats ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
-        }`}
+        className={`fixed md:static top-0 left-0 h-full w-72 bg-white border-r border-slate-200 flex flex-col z-40 transform transition-transform duration-300 ${showChats ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+          }`}
       >
         <div className="p-4 border-b border-slate-100">
           <h1 className="text-lg font-bold text-slate-800 mb-3">Messages</h1>
@@ -649,14 +650,12 @@ const Chat = () => {
               <div
                 key={u._id}
                 onClick={() => selectUser(u)}
-                className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-colors ${
-                  isActive ? 'bg-purple-50 border border-purple-200' : 'hover:bg-slate-50'
-                }`}
+                className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-colors ${isActive ? 'bg-purple-50 border border-purple-200' : 'hover:bg-slate-50'
+                  }`}
               >
                 <div className="relative shrink-0">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm ${
-                    isActive ? 'bg-purple-600 text-white' : 'bg-purple-100 text-purple-700'
-                  }`}>
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm ${isActive ? 'bg-purple-600 text-white' : 'bg-purple-100 text-purple-700'
+                    }`}>
                     {u.fullname?.firstname?.charAt(0)}
                   </div>
                 </div>
@@ -790,9 +789,8 @@ const Chat = () => {
           <div className="bg-white border-t border-slate-100 px-3 py-3 flex items-end gap-2">
             <button
               onClick={() => setShowEmojiPicker((p) => !p)}
-              className={`p-2 rounded-xl transition-colors shrink-0 ${
-                showEmojiPicker ? 'bg-purple-100 text-purple-600' : 'text-slate-400 hover:text-purple-500 hover:bg-slate-100'
-              }`}
+              className={`p-2 rounded-xl transition-colors shrink-0 ${showEmojiPicker ? 'bg-purple-100 text-purple-600' : 'text-slate-400 hover:text-purple-500 hover:bg-slate-100'
+                }`}
               title="Emoji"
             >
               <SmilePlus size={20} />
@@ -835,11 +833,10 @@ const Chat = () => {
 
             <button
               onClick={toggleVoice}
-              className={`p-2 rounded-xl transition-colors shrink-0 ${
-                isRecording
-                  ? 'bg-red-100 text-red-500 animate-pulse'
-                  : 'text-slate-400 hover:text-purple-500 hover:bg-slate-100'
-              }`}
+              className={`p-2 rounded-xl transition-colors shrink-0 ${isRecording
+                ? 'bg-red-100 text-red-500 animate-pulse'
+                : 'text-slate-400 hover:text-purple-500 hover:bg-slate-100'
+                }`}
               title={isRecording ? 'Stop recording' : 'Voice input'}
             >
               {isRecording ? <MicOff size={20} /> : <Mic size={20} />}

@@ -15,6 +15,7 @@ import "react-toastify/dist/ReactToastify.css";
 import EditTask from './pages/EditTask'
 import api from './api'
 import Chat from './pages/Chat'
+import Files from './pages/Files'
 
 const App = () => {
 
@@ -39,6 +40,7 @@ const App = () => {
           <Route path="tasks" element={<Tasks />} />
           <Route path='tasks/editTask/:id' element={<EditTask />} />
           <Route path="chat" element={<Chat/>}/>
+          <Route path="files" element={<Files/>}/>
 
         </Route>
         <Route path='/users/logout' element={
