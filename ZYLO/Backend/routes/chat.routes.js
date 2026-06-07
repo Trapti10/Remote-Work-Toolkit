@@ -1,12 +1,16 @@
 const express = require('express');
 const { authUser } = require('../middlewares/auth.middleware');
 const router = express.Router();
-chatController = require('../controllers/chat.controller');
+const chatController = require('../controllers/chat.controller');
 
-router.post("/send",authUser, chatController.sendMessage);
+// Messages
+router.post('/send', authUser, chatController.sendMessage);
+router.get('/messages/:senderId/:receiverId', authUser, chatController.getMessages);
 
-router.get("/messages/:senderId/:receiverId",authUser,  chatController.getMessages)
+// Users
+router.get('/chatUsers', authUser, chatController.getChatUsers);
 
-router.get("/chatUsers", authUser, chatController.getChatUsers)
+// Read receipts
+router.patch('/markAsRead/:senderId', authUser, chatController.markAsRead);
 
 module.exports = router;
